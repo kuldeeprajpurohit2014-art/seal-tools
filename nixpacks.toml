@@ -1,15 +1,13 @@
-[variables]
-PATH = "/root/.local/bin:$PATH"
-
 [phases.setup]
 nixPkgs = ["nodejs", "npm", "python3", "ffmpeg"]
 
-[phases.preparepython]
+[phases.install]
+dependsOn = ["setup"]
 cmds = [
-  "mkdir -p /root/.local/bin",
-  "ln -sf $(which python3) /root/.local/bin/python"
+  "ln -sf $(which python3) /usr/bin/python || true",
+  "npm ci"
 ]
 
 [phases.build]
-dependsOn = ["setup", "preparepython"]
-cmds = ["npm ci", "npm run build"]
+dependsOn = ["install"]
+cmds = ["npm run build"]
