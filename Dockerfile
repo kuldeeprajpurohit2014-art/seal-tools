@@ -1,22 +1,22 @@
-FROM node:20
+FROM node:20-slim
 
-# Install python and ffmpeg so yt-dlp works perfectly
+# Install system dependencies
 RUN apt-get update && apt-get install -y python3 python-is-python3 ffmpeg curl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Install packages
 COPY package*.json ./
 RUN npm ci
 
-# Copy the rest of the application
-COPY . .
+# Zabardasti yt-dlp binary ko download karke sahi jagah rakhna
+RUN mkdir -p node_modules/yt-dlp-exec/bin && curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o node_modules/yt-dlp-exec/bin/yt-dlp && chmod +x node_modules/yt-dlp-exec/bin/yt-dlp
 
-# Build the Next.js app
+# Copy our code and build
+COPY . .
 RUN npm run build
 
 EXPOSE 3000
-ENV PORT=3000
 
-# Start the application
+# Start server
 CMD ["npm", "start"]
