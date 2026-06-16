@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import ytDlp from 'yt-dlp-exec';
+import { create } from 'yt-dlp-exec';
+const ytDlp = create('/usr/local/bin/yt-dlp');
 
 export async function POST(req: NextRequest) {
   try {
